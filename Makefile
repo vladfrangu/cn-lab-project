@@ -5,3 +5,8 @@ build:
 	@echo "Compiling the project"
 	iverilog -o ./dist/alu src/**/*.v
 	@echo "Project compiled successfully"
+
+clean:
+	@echo "Cleaning the project"
+	@rm dist/alu
+	@echo "Project cleaned successfully"
