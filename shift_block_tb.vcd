@@ -1,0 +1,39 @@
+$date
+	Fri Apr  5 10:45:32 2024
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module shift_block_tb $end
+$var wire 32 ! out [31:0] $end
+$var reg 32 " a [31:0] $end
+$var reg 1 # direction $end
+$scope module uut $end
+$var wire 32 $ a [31:0] $end
+$var wire 1 # direction $end
+$var reg 32 % out [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b11110011000 %
+b1111001100 $
+1#
+b1111001100 "
+b11110011000 !
+$end
+#10
+b111100110 !
+b111100110 %
+0#
+#20
+b11110011000 !
+b11110011000 %
+1#
