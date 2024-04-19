@@ -4,7 +4,7 @@ module alu (
 	input [31:0] a,
 	input [31:0] b,
 	input [3:0] op,
-	output [31:0] out
+	output [63:0] out
 	// TODO: do we want to also output a status for each operation
 );
 
