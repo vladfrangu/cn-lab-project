@@ -18,17 +18,7 @@ reg [31:0] m_register_negated;
 reg [31:0] m_register_double;
 reg [31:0] m_register_negated_double;
 
-reg [2:0] state, next_state;
 reg [1:0] count;
-
-localparam State_AddM = 3'b000;
-localparam State_SubM = 3'b001;
-localparam State_Add2M = 3'b010;
-localparam State_Sub2M = 3'b011;
-localparam State_Shift = 3'b100;
-
-localparam State_Initial = 3'b111;
-
 reg done;
 
 always @(posedge clk, negedge rst) begin
