@@ -15,8 +15,8 @@ reg [31:0] q_register;
 reg [31:0] m_register;
 
 reg [31:0] m_register_negated;
-reg [31:0] m_register_double;
-reg [31:0] m_register_negated_double;
+reg [32:0] m_register_double;
+reg [32:0] m_register_negated_double;
 
 wire [4:0] counter_count;
 wire counter_reached;
@@ -106,8 +106,8 @@ always @(posedge clk or posedge rst) begin
 			if (state != Done) begin
 				// Shift
 				{a_register[30:0], q_register[31:0], q_minus_1} = {a_register[32:0], q_register[31:1]};
-				a_register[31] = a_register[32];
-				a_register[32] = a_register[32];
+				a_register[31] = a_register[30];
+				a_register[32] = a_register[30];
 
 				case ({ q_register[1], q_register[0], q_minus_1 })
 					3'b000,

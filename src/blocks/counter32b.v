@@ -11,11 +11,10 @@ always @ (posedge clk or posedge reset) begin
         reached <= 0;
     end else begin
         if (count == 31) begin
-            count <= 0;
-            reached <= 1;
+            reached = 1;
         end else begin
-            count <= count + 1;
-            reached <= 0;
+            count = count + 1;
+            reached = 0;
         end
     end
 end
