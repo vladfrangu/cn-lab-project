@@ -1,62 +1,61 @@
-module sum_block (
+module sum_block #(
+	parameter w = 64
+) (
 	input clk, rst,
 
-	input [31:0] a,
-	input [31:0] b,
+	input [w-1:0] a,
+	input [w-1:0] b,
 	input carry_in,
-	output [32:0] out
+	output [w-1:0] out
 );
-
-	wire [32:0] carry_outs;
 	generate
+		wire [w:0] carry_outs;
+
 		genvar i;
 
-		for (i = 0; i < 32; i = i + 1) begin
+		for (i = 0; i < w; i = i + 1) begin
 			if (i == 0) begin
 				fac_block first(.clk(clk), .a(a[i]), .b(b[i]), .carry_in(carry_in), .out(out[i]), .carry_out(carry_outs[i]));
 			end else begin
 				fac_block others(.clk(clk), .a(a[i]), .b(b[i]), .carry_in(carry_outs[i - 1]), .out(out[i]), .carry_out(carry_outs[i]));
 			end
 		end
-
-		assign carry_out = carry_outs[31];
 	endgenerate
-
 endmodule
 
 // module sum_block_tb;
 // 	reg clk, rst;
-// 	reg [31:0] a, b;
+// 	reg [63:0] a, b;
 // 	reg carry_in;
-// 	wire [32:0] out;
+// 	wire [63:0] out;
 
 // 	sum_block uut(.clk(clk), .rst(rst), .a(a), .b(b), .carry_in(carry_in), .out(out));
 
 // 	initial begin
 // 		clk = 0;
 // 		rst = 0;
-// 		a = 32'h00000000;
-// 		b = 32'h00000000;
+// 		a = 64'h0000000000000000;
+// 		b = 64'h0000000000000000;
 // 		carry_in = 0;
 // 		$display("clk=%b, rst=%b, a=%h, b=%h, carry_in=%b, out=%b", clk, rst, a, b, carry_in, out);
 
-// 		#10 rst = 1;
+// 		#40 rst = 1;
 // 		$display("clk=%b, rst=%b, a=%h, b=%h, carry_in=%b, out=%b", clk, rst, a, b, carry_in, out);
-// 		#10 rst = 0;
+// 		#40 rst = 0;
 // 		$display("clk=%b, rst=%b, a=%h, b=%h, carry_in=%b, out=%b", clk, rst, a, b, carry_in, out);
 
-// 		#10
-// 		a = 32'b00000000000000000000000000000001;
-// 		b = 32'b00000000000000000000000000000001;
+// 		#40
+// 		a = 64'b0000000000000000000000000000000000000000000000000000000000000011;
+// 		b = 64'b0000000000000000000000000000000000000000000000000000000000000001;
 // 		$display("clk=%b, rst=%b, a=%h, b=%h, carry_in=%b, out=%b", clk, rst, a, b, carry_in, out);
 
 // 		// Let it cook
-// 		#20 $display("clk=%b, rst=%b, a=%h, b=%h, carry_in=%b, out=%b", clk, rst, a, b, carry_in, out);
+// 		#40 $display("clk=%b, rst=%b, a=%h, b=%h, carry_in=%b, out=%b", clk, rst, a, b, carry_in, out);
 
-// 		#20 $finish;
+// 		#40 $finish;
 // 	end
 
 // 	always begin
-// 		#5 clk = ~clk;
+// 		#1 clk = ~clk;
 // 	end
 // endmodule
