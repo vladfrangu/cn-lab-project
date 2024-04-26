@@ -1,8 +1,8 @@
 module multiplier_block (
 	input clk, rst,
 
-	input [31:0] a,
-	input [31:0] b,
+	input [63:0] a,
+	input [63:0] b,
 
 	output reg [63:0] out
 );
@@ -10,13 +10,13 @@ module multiplier_block (
 // Use booth radix-4 algorithm
 
 reg q_minus_1;
-reg [32:0] a_register;
-reg [31:0] q_register;
-reg [31:0] m_register;
+reg [64:0] a_register;
+reg [63:0] q_register;
+reg [63:0] m_register;
 
-reg [31:0] m_register_negated;
-reg [32:0] m_register_double;
-reg [32:0] m_register_negated_double;
+reg [63:0] m_register_negated;
+reg [64:0] m_register_double;
+reg [64:0] m_register_negated_double;
 
 wire [4:0] counter_count;
 wire counter_reached;
@@ -28,7 +28,7 @@ counter_to_32 counter (
 	.reached(counter_reached)
 );
 
-reg [2:0] state, next_state;
+reg [2:0] state;
 
 localparam ShiftOnly = 3'b000;
 localparam AddM = 3'b001;
@@ -40,15 +40,13 @@ localparam Done = 3'b111;
 always @(posedge clk or posedge rst) begin
 	if (rst) begin
 		q_minus_1 <= 1'b0;
-		a_register <= 32'b0;
+		a_register <= 64'b0;
 		q_register <= a;
 		m_register <= b;
 
 		m_register_negated <= (~m_register) + 1;
 		m_register_double <= m_register << 1;
 		m_register_negated_double <= m_register_negated << 1;
-
-		#1
 
 		case ({ q_register[1], q_register[0], q_minus_1 })
 			3'b000,
@@ -77,7 +75,7 @@ always @(posedge clk or posedge rst) begin
 	end else begin
 		if (counter_reached) begin
 			state <= Done;
-			out = {a_register[31:0], q_register[31:0]};
+			out = {a_register[63:0], q_register[63:0]};
 		end else begin
 			case (state)
 				ShiftOnly: begin
@@ -105,9 +103,9 @@ always @(posedge clk or posedge rst) begin
 
 			if (state != Done) begin
 				// Shift
-				{a_register[30:0], q_register[31:0], q_minus_1} = {a_register[32:0], q_register[31:1]};
-				a_register[31] = a_register[30];
-				a_register[32] = a_register[30];
+				{a_register[61:0], q_register[63:0], q_minus_1} = {a_register[64:0], q_register[63:1]};
+				a_register[62] = a_register[60];
+				a_register[63] = a_register[60];
 
 				case ({ q_register[1], q_register[0], q_minus_1 })
 					3'b000,
@@ -137,48 +135,39 @@ always @(posedge clk or posedge rst) begin
 		end
 	end
 end
-
-// always @(*) begin
-// 	if (!rst) begin
-
-// end
-// end
-
 endmodule
 
-module multiplier_block_tb;
+// module multiplier_block_tb;
+// 	reg clk, rst;
+// 	reg [63:0] a, b;
+// 	wire [63:0] out;
 
-	reg clk, rst;
-	reg [31:0] a, b;
-	wire [63:0] out;
+// 	multiplier_block uut(.clk(clk), .rst(rst), .a(a), .b(b), .out(out));
 
-	multiplier_block uut(.clk(clk), .rst(rst), .a(a), .b(b), .out(out));
+// 	initial begin
+// 		clk = 0;
+// 		rst = 0;
+// 		a = 64'h00000000;
+// 		b = 64'h00000000;
+// 		$display("clk=%b, rst=%b, a=%h, b=%h, out=%h", clk, rst, a, b, out);
 
-	initial begin
-		clk = 0;
-		rst = 0;
-		a = 32'h00000000;
-		b = 32'h00000000;
-		$display("clk=%b, rst=%b, a=%h, b=%h, out=%h", clk, rst, a, b, out);
+// 		a = 64'b1111111111111111111111111111111111111111111111111111111111111101;
+// 		b = 64'b1111111111111111111111111111111111111111111111111111111111111101;
 
-		a = 32'b11111111111111111111111111111110;
-		b = 32'b11111111111111111111111111111110;
+// 		#40 rst = 1;
+// 		$display("clk=%b, rst=%b, a=%h, b=%h, out=%h", clk, rst, a, b, out);
+// 		#40 rst = 0;
+// 		$display("clk=%b, rst=%b, a=%h, b=%h, out=%h", clk, rst, a, b, out);
 
-		#40 rst = 1;
-		$display("clk=%b, rst=%b, a=%h, b=%h, out=%h", clk, rst, a, b, out);
-		#40 rst = 0;
-		$display("clk=%b, rst=%b, a=%h, b=%h, out=%h", clk, rst, a, b, out);
+// 		$display("clk=%b, rst=%b, a=%h, b=%h, out=%b", clk, rst, a, b, out);
 
-		$display("clk=%b, rst=%b, a=%h, b=%h, out=%b", clk, rst, a, b, out);
+// 		// Let it cook
+// 		#1000 $display("clk=%b, rst=%b, a=%h, b=%h, out=%b", clk, rst, a, b, out);
 
-		// Let it cook
-		#1000 $display("clk=%b, rst=%b, a=%h, b=%h, out=%b", clk, rst, a, b, out);
+// 		#20 $finish;
+// 	end
 
-		#20 $finish;
-	end
-
-	always begin
-		#1 clk = ~clk;
-	end
-
-endmodule
+// 	always begin
+// 		#1 clk = ~clk;
+// 	end
+// endmodule

@@ -3,9 +3,9 @@ module shift_block (
 	input enabled,
 	input direction,
 
-	input [31:0] a,
+	input [63:0] a,
 
-	output reg [31:0] out
+	output reg [63:0] out
 );
 
 	always @(posedge clk) begin
@@ -14,9 +14,9 @@ module shift_block (
 		end else begin
 			if (enabled) begin
 				if (direction) begin
-					out <= {a[30:0], 32'b0};
+					out <= {a[30:0], 1'b0};
 				end else begin
-					out <= {32'b0, a[31:1]};
+					out <= {1'b0, a[63:1]};
 				end
 			end else begin
 				out <= out;
